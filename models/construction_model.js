@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 
 const constructionScheme = new mongoose.Schema({
-  client_name: {
-    type: String,
-    required: true,
-  },
+  client_id: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+    },
+  ],
   construction_name: {
     type: String,
     required: true,

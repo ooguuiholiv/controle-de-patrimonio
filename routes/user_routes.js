@@ -47,7 +47,7 @@ router.post("/auth/register", async (req, res) => {
   }
 });
 
-router.get("/list/users", async (req, res) => {
+router.get("/list/users", isAuthenticated, async (req, res) => {
   try {
     const user = await User.find()
     return res.status(200).json(user)

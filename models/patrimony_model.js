@@ -41,12 +41,16 @@ const patrimonyScheme = new mongoose.Schema({
     type: String,
     required: false,
   },
+  is_active: {
+    type: Boolean,
+    required: true,
+  },
   responsible_employee_id: [
     {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Employee"
-    }
-  ]
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Patrimony", patrimonyScheme);

@@ -49,6 +49,9 @@ router.post("/register/users", async (req, res) => {
 router.get("/list/users", isAuthenticated, async (req, res) => {
   try {
     const user = await User.find();
+    if (!user) {
+      return res.status(404).json({ msg: "User's not found" });
+    }
     return res.status(200).json(user);
   } catch (err) {
     return res.status(500).json({ err: err.message });

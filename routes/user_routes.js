@@ -80,4 +80,18 @@ router.put("/update/users", isAuthenticated, async (req, res) => {
   }
 });
 
+router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { is_active },
+      { new: false }
+    );
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.json(500).json({ err: err.message });
+  }
+});
+
 module.exports = router;

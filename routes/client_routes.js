@@ -60,3 +60,26 @@ router.get("/list/client", isAuthenticated, async (req, res) => {
     return res.status(500).json({ err: err.message });
   }
 });
+
+router.put("/update/client/:clientId", isAuthenticated, async (req, res) => {
+  try {
+    const clientId = req.params.clientId;
+    const { phone } = req.body;
+    const updateClient = await Client.findByIdAndUpdate(
+      clientId,
+      { phone },
+      { new: phone }
+    );
+    if (!updateClient) {
+      return res.status(404).json({ err: "Client not found" });
+    }
+    return res.status(200).json({
+      message: "Client updated successfully",
+      updateClient,
+    });
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
+
+module.exports = router;

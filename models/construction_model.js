@@ -12,7 +12,13 @@ const constructionScheme = new mongoose.Schema({
   allocated_items: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "AllocatedItems"
+      ref: "AllocatedItems",
+    },
+  ],
+  allocated_team: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
     },
   ],
 });

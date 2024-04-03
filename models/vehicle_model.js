@@ -13,10 +13,7 @@ const VehicleScheme = new mongoose.Schema({
     type: String,
     required: false,
   },
-  AllocatedItem: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "AllocatedItems",
-    },
-  ],
+  
 });
+
+module.exports = mongoose.model("Vehicle", VehicleScheme)

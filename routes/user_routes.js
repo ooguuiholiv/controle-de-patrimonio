@@ -70,7 +70,7 @@ router.put("/update/users", isAuthenticated, async (req, res) => {
       phone,
     });
     if (!updateUser) {
-      return res.status(404).json({ err: "Event not found" });
+      return res.status(404).json({ err: "User not found" });
     }
     return res.status(200).json({
       message: "User updated successfully",

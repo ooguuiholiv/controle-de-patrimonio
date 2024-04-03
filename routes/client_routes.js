@@ -82,4 +82,28 @@ router.put("/update/client/:clientId", isAuthenticated, async (req, res) => {
   }
 });
 
+router.delete(
+  "/inative/client/:clientId",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const clientId = req.params.clientId;
+      const client = await Client.findByIdAndUpdate(
+        clientId,
+        { is_active },
+        { new: false }
+      );
+      if (!client) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+      return res.status(200).json({
+        msg: "Client successfully inactivated",
+        client,
+      });
+    } catch (err) {
+      return res.status(500).json({ err: err.message });
+    }
+  }
+);
+
 module.exports = router;

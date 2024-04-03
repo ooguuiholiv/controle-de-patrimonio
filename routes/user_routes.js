@@ -43,7 +43,17 @@ router.post("/auth/register", async (req, res) => {
     console.log(newUser);
     return res.status(201).json({ msg: "User created succesfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json("Error: ", err);
+    return res.status(500).json({ err: err.message });
   }
 });
+
+router.get("/list/users", async (req, res) => {
+  try {
+    const user = await User.find()
+    return res.status(200).json(user)
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
+
+module.exports = router;

@@ -27,6 +27,10 @@ const clientScheme = new mongoose.Schema({
     type: String,
     required: true,
   },
+  is_active:{
+    type: Boolean,
+    required: true
+  },
   constructions: [
     {
       type: mongoose.Schema.Types.ObjectId,

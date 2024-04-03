@@ -5,7 +5,7 @@ const isAuthenticated = require("../middlewares/auth");
 const router = express.Router();
 const { validateEmail, validatePassword } = require("../utils/validators");
 
-router.post("/auth/register", async (req, res) => {
+router.post("/register/users", async (req, res) => {
   try {
     const { first_name, last_name, cpf, phone, email, password, type_user } =
       req.body;

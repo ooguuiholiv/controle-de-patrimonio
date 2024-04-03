@@ -36,6 +36,7 @@ router.post("/auth/register", async (req, res) => {
       cpf,
       phone,
       type_user: "editor",
+      is_active: true,
     };
 
     const newUser = new User(userData);

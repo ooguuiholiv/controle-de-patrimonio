@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    // O padrão é guest!
+    type_user:{
+        type: String,
+        required: true
     }
 })
 

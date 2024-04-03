@@ -89,7 +89,13 @@ router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
       { is_active },
       { new: false }
     );
-    return res.status(200).json(user);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    return res.status(200).json({
+      msg: "User successfully inactivated",
+      user,
+    });
   } catch (err) {
     return res.json(500).json({ err: err.message });
   }

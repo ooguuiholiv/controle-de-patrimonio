@@ -49,8 +49,31 @@ router.post("/auth/register", async (req, res) => {
 
 router.get("/list/users", isAuthenticated, async (req, res) => {
   try {
-    const user = await User.find()
-    return res.status(200).json(user)
+    const user = await User.find();
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
+
+// TODO checar atualização de usuário, provávelmente a rota precisará ser refatorada
+router.put("/update/users", isAuthenticated, async (req, res) => {
+  try {
+    const { first_name, last_name, cpf, phone } = req.body;
+    const user = req.user.id;
+    const updateUser = await User.findByIdAndUpdate(user, {
+      first_name,
+      last_name,
+      cpf,
+      phone,
+    });
+    if (!updateUser) {
+      return res.status(404).json({ err: "Event not found" });
+    }
+    return res.status(200).json({
+      message: "User updated successfully",
+      updateUser,
+    });
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }

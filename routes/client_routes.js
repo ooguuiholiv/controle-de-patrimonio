@@ -48,3 +48,15 @@ router.post("/register/client", isAuthenticated, async (req, res) => {
     return res.status(500).json({ err: err.message });
   }
 });
+
+router.get("/list/client", isAuthenticated, async (req, res) => {
+  try {
+    const client = await Client.find();
+    if (!client) {
+      return res.status(404).json("Clients not found");
+    }
+    return res.status(200).json(client);
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});

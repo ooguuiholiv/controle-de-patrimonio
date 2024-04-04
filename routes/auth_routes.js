@@ -81,8 +81,8 @@ router.get("/logout/client", (_req, res) => {
   return res.status(200).json({ msg: "Signed-Out successfully" });
 });
 
-// Verifica se o usuário esta logado
-router.get("/user/is-authenticated", isAuthenticated, (req, res) => {
+// Verifica se o usuário/cliente esta logado
+router.get("/is-authenticated", isAuthenticated, (req, res) => {
   res.json({ authenticated: true });
 });
 

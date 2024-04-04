@@ -5,6 +5,8 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 
 const user_routes = require("./routes/user_routes");
+const client_routes = require("./routes/client_routes");
+const auth_routes = require("./routes/client_routes");
 
 const port = process.env.PORT;
 
@@ -18,6 +20,8 @@ app.use(logger("dev"));
 
 // Routes
 app.use(user_routes);
+app.use(client_routes)
+app.use(auth_routes)
 
 app.listen(port, () => {
   console.log(`Server is running in port ${port}`);

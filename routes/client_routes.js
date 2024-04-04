@@ -4,7 +4,11 @@ const isAuthenticated = require("../middlewares/auth");
 const router = express.Router();
 const { validateEmail, validatePassword } = require("../utils/validators");
 const Client = require("../models/client_model");
+const jwt = require("jsonwebtoken");
+const secretJwt = process.env.SECRET_JWT;
+const PasswordReset = require("../models/reset_password_model");
 
+// Cria um cliente
 router.post("/register/client", isAuthenticated, async (req, res) => {
   try {
     const {
@@ -49,6 +53,7 @@ router.post("/register/client", isAuthenticated, async (req, res) => {
   }
 });
 
+// Lista todos os clientes
 router.get("/list/client", isAuthenticated, async (req, res) => {
   try {
     const client = await Client.find();
@@ -61,6 +66,7 @@ router.get("/list/client", isAuthenticated, async (req, res) => {
   }
 });
 
+//  Edita dados de um cliente
 router.put("/update/client/:clientId", isAuthenticated, async (req, res) => {
   try {
     const clientId = req.params.clientId;
@@ -82,6 +88,7 @@ router.put("/update/client/:clientId", isAuthenticated, async (req, res) => {
   }
 });
 
+// Inativa um cliente
 router.delete(
   "/inative/client/:clientId",
   isAuthenticated,
@@ -105,5 +112,30 @@ router.delete(
     }
   }
 );
+
+// Solicitar um link de redefinição de senha
+router.patch("/client/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (email.length === 0) {
+      return res.status(400).json({ err: "Please enter your e-mail" });
+    }
+    const existingCLient = await Client.findOne({ email });
+    if (!existingCLient) {
+      return res.status(400).json({ err: "Client not found" });
+    }
+    const token = jwt.sign({ email }, secretJwt, { expiresIn: 1800000 });
+    const min30 = 1800000;
+    const resetTokenExpiry = Date.now() + min30;
+    await PasswordReset.create({ email, token, resetTokenExpiry });
+    const resetLink = `http://localhost:3000/client/reset-password?token=${token}`;
+    // TODO envia email para o cliente!
+    return res.status(200).json({
+      msg: "An email has been sent with instructions to reset your password.",
+    });
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
 
 module.exports = router;

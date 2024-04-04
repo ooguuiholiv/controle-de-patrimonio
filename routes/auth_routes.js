@@ -5,32 +5,39 @@ const User = require("../models/user_model");
 const Client = require("../models/client_model");
 const isAuthenticated = require("../middlewares/auth");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 
 // Loga o usuário na aplicação
 router.post("/auth/user", async (req, res) => {
   try {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-    if (!existingUser || !isPasswordCorrect) {
+    if (!existingUser) {
       return res
         .status(400)
         .json({ msg: "Email or password are not in our database" });
     }
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    if (!isPasswordCorrect) {
+      return res
+        .status(400)
+        .json({ msg: "Email or password are not in our database" });
+    }
+    const fullname = existingUser.first_name + " " + existingUser.last_name
     const payload = {
       user: {
         id: existingUser.id,
-        fullname: existingUser.first_name + existingUser.last_name,
+        fullname: fullname
       },
     };
     const bearerToken = await jwt.sign(payload, secretJwt, {
       expiresIn: "12h",
     });
 
-    res.cookie("t", bearerToken, { expires: new Date() + 9999 });
+    res.cookie("t", bearerToken, { expire: new Date() + 9999 });
 
     return res.status(200).json({ msg: "Signed-In successfully", bearerToken });
   } catch (err) {
@@ -61,7 +68,7 @@ router.post("/auth/client", async (req, res) => {
     const bearerToken = await jwt.sign(payload, secretJwt, {
       expiresIn: "12h",
     });
-    res.cookie("t", bearerToken, { expires: new Date() + 9999 });
+    res.cookie("t", bearerToken, { expire: new Date() + 9999 });
 
     return res.status(200).json({ msg: "Signed-In successfully", bearerToken });
   } catch (err) {

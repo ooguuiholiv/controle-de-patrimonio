@@ -28,6 +28,9 @@ router.post("/auth/user", async (req, res) => {
     const bearerToken = await jwt.sign(payload, secretJwt, {
       expiresIn: "12h",
     });
+
+    res.cookie("t", bearerToken, { expires: new Date() + 9999 });
+
     return res.status(200).json({ msg: "Signed-In successfully", bearerToken });
   } catch (err) {
     return res.status(500).json({ err: err.message });
@@ -57,12 +60,14 @@ router.post("/auth/client", async (req, res) => {
     const bearerToken = await jwt.sign(payload, secretJwt, {
       expiresIn: "12h",
     });
+    res.cookie("t", bearerToken, { expires: new Date() + 9999 });
+
     return res.status(200).json({ msg: "Signed-In successfully", bearerToken });
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }
 });
 
-
+// Logout do usuário
 
 module.exports = router;

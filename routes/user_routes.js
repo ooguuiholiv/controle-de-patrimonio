@@ -4,6 +4,9 @@ const User = require("../models/user_model");
 const isAuthenticated = require("../middlewares/auth");
 const router = express.Router();
 const { validateEmail, validatePassword } = require("../utils/validators");
+const jwt = require("jsonwebtoken");
+const secretJwt = process.env.SECRET_JWT;
+const PasswordReset = require("../models/reset_password_model");
 
 router.post("/register/users", async (req, res) => {
   try {
@@ -98,6 +101,44 @@ router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
     });
   } catch (err) {
     return res.json(500).json({ err: err.message });
+  }
+});
+
+router.post("/user/reset-password", async (req, res) => {
+  const { newPassword, confirmPassword } = req.body;
+  const { token } = req.query;
+  try {
+    const decoded = jwt.verify(token, secretJwt);
+    const { email } = decoded;
+    const resetRequest = await PasswordReset.findOne({ email, token });
+    if (!resetRequest) {
+      return res
+        .status(400)
+        .json({ msg: "The token has expired and/or is invalid" });
+    }
+    const now = new Date();
+    if (now > resetRequest.resetTokenExpiry) {
+      await PasswordReset.deleteOne({ email, token });
+      return res.status(400).json({
+        msg: "The token has expired and/or is invalid, please request a password reset again",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        msg: "Passwords do not match",
+      });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: "User not found" });
+    }
+    const hashPass = await bcrypt.hash(confirmPassword, (saltOrRounds = 10));
+    user.password = hashPass;
+    await user.save();
+    res.send("Password updated successfully");
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
   }
 });
 

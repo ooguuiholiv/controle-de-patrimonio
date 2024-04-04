@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const secretJwt = process.env.SECRET_JWT;
 const PasswordReset = require("../models/reset_password_model");
 
+// Registrar usuário
 router.post("/register/users", async (req, res) => {
   try {
     const { first_name, last_name, cpf, phone, email, password, type_user } =
@@ -49,6 +50,7 @@ router.post("/register/users", async (req, res) => {
   }
 });
 
+//  Obter lista de usuários cadastrados
 router.get("/list/users", isAuthenticated, async (req, res) => {
   try {
     const user = await User.find();
@@ -62,6 +64,7 @@ router.get("/list/users", isAuthenticated, async (req, res) => {
 });
 
 // TODO checar atualização de usuário, provávelmente a rota precisará ser refatorada
+// Atualizar dados do usuario logado
 router.put("/update/users", isAuthenticated, async (req, res) => {
   try {
     const { first_name, last_name, cpf, phone } = req.body;
@@ -84,6 +87,7 @@ router.put("/update/users", isAuthenticated, async (req, res) => {
   }
 });
 
+// Inativar um usuário
 router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -104,6 +108,7 @@ router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
   }
 });
 
+// Alterar a senha de um usuário
 router.post("/user/reset-password", async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   const { token } = req.query;
@@ -141,5 +146,33 @@ router.post("/user/reset-password", async (req, res) => {
     return res.status(500).json({ err: err.message });
   }
 });
+
+// Solicitar um link de redefinição de senha
+router.patch("/user/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (email.length === 0) {
+      return res.status(400).json({ err: "Please enter your e-mail" });
+    }
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ err: "User not found" });
+    }
+    const token = jwt.sign({ email }, secretJwt, { expiresIn: 1800000 });
+    const min30 = 1800000;
+    const resetTokenExpiry = Date.now() + min30;
+    await PasswordReset.create({ email, token, resetTokenExpiry });
+    const resetLink = `http://localhost:3000/auth/forgot-password?token=${token}`;
+    //TODO Enviar email com o link
+    return res
+      .status(200)
+      .json({
+        msg: "An email has been sent with instructions to reset your password.",
+      });
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
+
 
 module.exports = router;

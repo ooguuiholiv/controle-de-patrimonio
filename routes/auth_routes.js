@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const secretJwt = process.env.SECRET_JWT;
 const User = require("../models/user_model");
 const Client = require("../models/client_model");
+const isAuthenticated = require("../middlewares/auth");
 const router = express.Router();
 
 // Loga o usuário na aplicação
@@ -78,6 +79,11 @@ router.get("/logout/user", (_req, res) => {
 router.get("/logout/client", (_req, res) => {
   res.clearCookie("t");
   return res.status(200).json({ msg: "Signed-Out successfully" });
+});
+
+// Verifica se o usuário esta logado
+router.get("/user/is-authenticated", isAuthenticated, (req, res) => {
+  res.json({ authenticated: true });
 });
 
 module.exports = router;

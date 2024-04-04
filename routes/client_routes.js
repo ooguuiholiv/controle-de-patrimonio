@@ -15,10 +15,8 @@ router.post("/register/client", isAuthenticated, async (req, res) => {
       fullname,
       document_id,
       phone,
-      type_user,
       email,
       password,
-      is_active,
     } = req.body;
     const existingCLient = await Client.findOne({ email });
     if (existingCLient) {

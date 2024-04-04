@@ -9,9 +9,10 @@ const secretJwt = process.env.SECRET_JWT;
 const PasswordReset = require("../models/reset_password_model");
 
 // Registrar usuário
+// TODO tornar rota privada para usuários autenticados
 router.post("/register/users", async (req, res) => {
   try {
-    const { first_name, last_name, cpf, phone, email, password, type_user } =
+    const { first_name, last_name, cpf, phone, email, password } =
       req.body;
 
     const existingUser = await User.findOne({ email });
@@ -28,7 +29,6 @@ router.post("/register/users", async (req, res) => {
         err: "Error: Invalid password: password must be at least 8 characters long and must include atleast one - one uppercase letter, one lowercase letter, one digit, one special character",
       });
     }
-
     const hashPass = await bcrypt.hash(password, (saltOrRounds = 10));
     const userData = {
       first_name,

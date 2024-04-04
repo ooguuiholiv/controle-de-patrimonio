@@ -65,7 +65,7 @@ router.get("/list/users", isAuthenticated, async (req, res) => {
 
 // TODO checar atualização de usuário, provávelmente a rota precisará ser refatorada
 // Atualizar dados do usuario logado
-router.put("/update/users", isAuthenticated, async (req, res) => {
+router.put("/update/user", isAuthenticated, async (req, res) => {
   try {
     const { first_name, last_name, cpf, phone } = req.body;
     const user = req.user.id;

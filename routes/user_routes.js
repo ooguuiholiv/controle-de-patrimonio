@@ -12,9 +12,8 @@ const PasswordReset = require("../models/reset_password_model");
 // TODO tornar rota privada para usuários autenticados
 router.post("/register/users", async (req, res) => {
   try {
-    const { first_name, last_name, cpf, phone, email, password } =
-      req.body;
-
+    const { first_name, last_name, cpf, phone, email, password } = req.body;
+    console.log(email);
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(403).json({ err: "User already exists" });
@@ -23,7 +22,6 @@ router.post("/register/users", async (req, res) => {
     if (!validateEmail(email)) {
       return res.status(400).json({ err: "Error: Invalid email" });
     }
-
     if (!validatePassword(password)) {
       return res.status(400).json({
         err: "Error: Invalid password: password must be at least 8 characters long and must include atleast one - one uppercase letter, one lowercase letter, one digit, one special character",
@@ -91,20 +89,13 @@ router.put("/update/user", isAuthenticated, async (req, res) => {
 router.delete("/inative/users/:userId", isAuthenticated, async (req, res) => {
   try {
     const userId = req.params.userId;
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { is_active },
-      { new: false }
-    );
-    if (!user) {
-      return res.status(404).json({ msg: "User not found" });
-    }
+    await User.findByIdAndUpdate(userId, { is_active: false });
+
     return res.status(200).json({
       msg: "User successfully inactivated",
-      user,
     });
   } catch (err) {
-    return res.json(500).json({ err: err.message });
+    return res.status(500).json({ err: err.message });
   }
 });
 
@@ -141,6 +132,7 @@ router.post("/user/reset-password", async (req, res) => {
     const hashPass = await bcrypt.hash(confirmPassword, (saltOrRounds = 10));
     user.password = hashPass;
     await user.save();
+    await PasswordReset.deleteOne({ email, token });
     res.send("Password updated successfully");
   } catch (err) {
     return res.status(500).json({ err: err.message });
@@ -164,15 +156,12 @@ router.patch("/user/forgot-password", async (req, res) => {
     await PasswordReset.create({ email, token, resetTokenExpiry });
     const resetLink = `http://localhost:3000/auth/forgot-password?token=${token}`;
     //TODO Enviar email com o link
-    return res
-      .status(200)
-      .json({
-        msg: "An email has been sent with instructions to reset your password.",
-      });
+    return res.status(200).json({
+      msg: "An email has been sent with instructions to reset your password.",
+    });
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }
 });
-
 
 module.exports = router;

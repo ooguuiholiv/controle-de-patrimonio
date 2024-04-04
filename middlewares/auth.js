@@ -1,28 +1,29 @@
-const jwt = require("jsonwebtoken");
 const User = require("../models/user_model");
-const Client = require('../models/client_model')
-
+const Client = require("../models/client_model");
+const secretJwt = process.env.SECRET_JWT;
+const jwt = require("jsonwebtoken");
 const isAuthenticated = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-
     if (!authHeader) {
       return res.status(401).json({
         err: "You must be logged in",
       });
     }
 
-    const token = authHeader.split(" ")[1]; // This is the bearer token
-
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(authHeader, secretJwt);
     const user = await User.findById(decoded.user.id);
-    const client = await Client.findById(decoded.user.id)
+    const client = await Client.findById(decoded.user.id);
 
-    if (!user || !client) {
-      return res.status(404).json({ err: "User not found" });
+    if(!user){
+      if(client){
+        req.user = client
+        return next()
+      }
+      return res.status(400).json({msg: "User/client not found"})
     }
-    req.user = user;
-    next();
+    req.user = user
+    next()
   } catch (err) {
     console.log(err);
     res.status(503).json({

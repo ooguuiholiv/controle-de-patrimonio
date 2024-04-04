@@ -138,4 +138,40 @@ router.patch("/client/forgot-password", async (req, res) => {
   }
 });
 
+// Redefine a senha do cliente
+router.post("/client/reset-password", async (req, res) => {
+  const { newPassword, confirmPassword } = req.body;
+  const { token } = req.query;
+  try {
+    const decoded = jwt.decode(token, secretJwt);
+    const { email } = decoded;
+    const resetRequest = await PasswordReset.findOne({ email, token });
+    if (!resetRequest) {
+      return res
+        .status(400)
+        .json({ msg: "The token has expired and/or is invalid" });
+    }
+    const now = new Date();
+    if (now > resetRequest.resetTokenExpiry) {
+      await PasswordReset.deleteOne({ email, token });
+      return res.status(400).json({
+        msg: "The token has expired and/or is invalid, please request a password reset again",
+      });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ msg: "Passwords do not match. " });
+    }
+    const client = await Client.findOne({ email });
+    if (!client) {
+      return res.status(400).json({ msg: "CLient not found" });
+    }
+    const hashPass = await bcrypt.hash(confirmPassword, (saltOrRounds = 10));
+    client.password = hashPass;
+    await client.save();
+    res.send("Password updated succesfully");
+  } catch (err) {
+    return res.status(500).json({ err: err.message });
+  }
+});
+
 module.exports = router;

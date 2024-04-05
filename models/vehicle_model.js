@@ -9,13 +9,17 @@ const VehicleScheme = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  conductor: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+    },
+  ],
+
   is_active: {
     type: Boolean,
     required: true,
-  },
-  conductor: {
-    type: String,
-    required: false,
   },
 });
 

@@ -264,7 +264,7 @@ Install controle-de-patrimonio with npm
 
 [x] - List users.
 
-[ ] - Update logged in user data.
+[x] - Update logged in user data.
 
 [x] - Requests a password reset link.
 
@@ -279,15 +279,15 @@ Install controle-de-patrimonio with npm
 
 [x] - Create a new user.
 
-[ ] - List clients.
+[x] - List clients.
 
-[ ] - Update client.
+[x] - Update client.
 
-[ ] - Requests a password reset link.
+[x] - Requests a password reset link.
 
-[ ] - Reset password.
+[x] - Reset password.
 
-[ ] - Inactivate a client
+[x] - Inactivate a client
 
 </details>
 

@@ -76,17 +76,12 @@ router.post("/auth/client", async (req, res) => {
   }
 });
 
-// Logout do usuário
-router.get("/logout/user", (_req, res) => {
+// Logout do usuário e cliente
+router.get("/logout", (_req, res) => {
   res.clearCookie("t");
   return res.status(200).json({ msg: "Signed-Out successfully" });
 });
 
-// Logout do Cliente
-router.get("/logout/client", (_req, res) => {
-  res.clearCookie("t");
-  return res.status(200).json({ msg: "Signed-Out successfully" });
-});
 
 // Verifica se o usuário/cliente esta logado
 router.get("/is-authenticated", isAuthenticated, (req, res) => {

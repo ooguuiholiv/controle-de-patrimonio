@@ -67,15 +67,26 @@ router.put("/update/user", isAuthenticated, async (req, res) => {
   try {
     const { first_name, last_name, cpf, phone } = req.body;
     const user = req.user.id;
-    const updateUser = await User.findByIdAndUpdate(user, {
-      first_name,
-      last_name,
-      cpf,
-      phone,
+
+    // Verificar se algum dos campos obrigatórios está ausente no corpo da solicitação
+    if (!first_name && !last_name && !cpf && !phone) {
+      return res.status(400).json({ err: "At least one field is required" });
+    }
+
+    const updateFields = {};
+    if (first_name) updateFields.first_name = first_name;
+    if (last_name) updateFields.last_name = last_name;
+    if (cpf) updateFields.cpf = cpf;
+    if (phone) updateFields.phone = phone;
+
+    const updateUser = await User.findByIdAndUpdate(user, updateFields, {
+      new: true,
     });
+
     if (!updateUser) {
       return res.status(404).json({ err: "User not found" });
     }
+
     return res.status(200).json({
       message: "User updated successfully",
       updateUser,

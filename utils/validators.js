@@ -25,4 +25,11 @@ const validatePlate = (plate) => {
   return plateRegex.test(plate);
 };
 
-module.exports = { validateName, validateEmail, validatePassword, validatePlate };
+const validatePlateMercosul = (plate) => {
+  const plateRegexMerco = new RegExp(
+     /^[A-Z]{3}\d[A-Z]\d{2}$/
+  );
+  return plateRegexMerco.test(plate)
+}
+
+module.exports = { validateName, validateEmail, validatePassword, validatePlate, validatePlateMercosul };

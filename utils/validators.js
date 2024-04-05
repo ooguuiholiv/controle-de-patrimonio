@@ -18,4 +18,11 @@ const validatePassword = (password) => {
   return passwordRegex.test(password);
 };
 
-module.exports = { validateName, validateEmail, validatePassword };
+const validatePlate = (plate) => {
+  const plateRegex = new RegExp(
+    /^[A-Z]{3}-\d{4}$/
+  )
+  return plateRegex.test(plate);
+};
+
+module.exports = { validateName, validateEmail, validatePassword, validatePlate };

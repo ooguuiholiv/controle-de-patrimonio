@@ -26,7 +26,6 @@ router.post("/create/employee", isAuthenticated, async (req, res) => {
     const employee = await Employee.findOne({
       fullname: fullname.toUpperCase(),
     });
-    console.log(employee);
     if (employee) {
       return res.status(400).json({ msg: "Employee already exists" });
     }

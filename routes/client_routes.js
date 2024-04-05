@@ -7,17 +7,12 @@ const Client = require("../models/client_model");
 const jwt = require("jsonwebtoken");
 const secretJwt = process.env.SECRET_JWT;
 const PasswordReset = require("../models/reset_password_model");
+const User = require("../models/user_model");
 
 // Cria um cliente
 router.post("/register/client", isAuthenticated, async (req, res) => {
   try {
-    const {
-      fullname,
-      document_id,
-      phone,
-      email,
-      password,
-    } = req.body;
+    const { fullname, document_id, phone, email, password } = req.body;
     const existingCLient = await Client.findOne({ email });
     if (existingCLient) {
       return res.status(403).json({ err: "Client already exists" });
@@ -54,16 +49,24 @@ router.post("/register/client", isAuthenticated, async (req, res) => {
 // Lista todos os clientes
 router.get("/list/client", isAuthenticated, async (req, res) => {
   try {
-    const client = await Client.find();
-    if (!client) {
-      return res.status(404).json("Clients not found");
+    const user = await User.findById(req.user.id);
+    if (user) {
+      const listClient = await Client.find();
+      if (!listClient) {
+        return res.status(404).json("Clients not found");
+      }
+      return res.status(200).json(listClient);
+    } else {
+      return res
+        .status(401)
+        .json({ msg: "You do not have permission to access this path" });
     }
-    return res.status(200).json(client);
   } catch (err) {
     return res.status(500).json({ err: err.message });
   }
 });
 
+// TODO revisar rota - esta errada
 //  Edita dados de um cliente
 router.put("/update/client/:clientId", isAuthenticated, async (req, res) => {
   try {
@@ -93,11 +96,9 @@ router.delete(
   async (req, res) => {
     try {
       const clientId = req.params.clientId;
-      const client = await Client.findByIdAndUpdate(
-        clientId,
-        { is_active },
-        { new: false }
-      );
+      const client = await Client.findByIdAndUpdate(clientId, {
+        is_active: false,
+      });
       if (!client) {
         return res.status(404).json({ msg: "User not found" });
       }

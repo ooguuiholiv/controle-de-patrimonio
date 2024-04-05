@@ -4,6 +4,10 @@ const employeeScheme = new mongoose.Schema({
     fullname: {
         type: String,
         required: true
+    },
+    is_active:{
+        type: Boolean,
+        required: true
     }
 })
 

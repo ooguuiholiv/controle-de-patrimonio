@@ -8,6 +8,7 @@ const user_routes = require("./routes/user_routes");
 const client_routes = require("./routes/client_routes");
 const auth_routes = require("./routes/auth_routes");
 const employee_routes = require("./routes/employee_routes");
+const team_routes = require("./routes/team_routes")
 
 const port = process.env.PORT;
 
@@ -24,6 +25,7 @@ app.use(user_routes);
 app.use(client_routes)
 app.use(auth_routes)
 app.use(employee_routes)
+app.use(team_routes)
 
 app.listen(port, () => {
   console.log(`Server is running in port ${port}`);

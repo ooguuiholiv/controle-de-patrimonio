@@ -193,7 +193,7 @@ router.put("/update/team/:teamId", isAuthenticated, async (req, res) => {
   }
 });
 
-router.delete("/update/team/:teamId", isAuthenticated, async (req, res) => {
+router.delete("/delete/team/:teamId", isAuthenticated, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {

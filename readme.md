@@ -255,6 +255,106 @@ Install controle-de-patrimonio with npm
 
 </details>
 
+<details>
+<summary>Documentação das rotas de funcionários</summary>
+
+#### Criar um novo funcionário
+
+```http
+  POST /create/employee
+```
+
+| Parâmetro  | Tipo     | Descrição                                                             |
+| :--------- | :------- | :-------------------------------------------------------------------- |
+| `fullname` | `string` | **Usuário deve estar logado.**. Fornecer nome completo do funcionário |
+
+#### Listar todos os funcionários
+
+```http
+  GET /list/employee
+```
+
+| Parâmetro | Tipo     | Descrição                       |
+| :-------- | :------- | :------------------------------ |
+| `null`    | `string` | **Usuário deve estar logado.**. |
+
+#### Atualizar dados de um funcionário
+
+```http
+  PUT /update/employee/:employeeId
+```
+
+| Parâmetro              | Tipo     | Descrição                                                                                                                                |
+| :--------------------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| `fullname, employeeId` | `string` | **Usuário deve estar logado. Usuário deve informar o id do funcionario que deseja alterar**. Deve se informar o novo nome do funcionário |
+
+#### Inativar um funcionário
+
+```http
+  DELETE /inative/employee/:employeeId
+```
+
+| Parâmetro    | Tipo     | Descrição                                                                                     |
+| :----------- | :------- | :-------------------------------------------------------------------------------------------- |
+| `employeeId` | `string` | **Usuário deve estar logado. Usuário deve informar o id do funcionario que deseja inativar**. |
+
+#### Deletar um funcionário
+
+```http
+  DELETE /delete/employee/:employeeId
+```
+
+| Parâmetro    | Tipo     | Descrição                                                                                    |
+| :----------- | :------- | :------------------------------------------------------------------------------------------- |
+| `employeeId` | `string` | **Usuário deve estar logado. Usuário deve informar o id do funcionario que deseja deletar**. |
+
+</details>
+
+<details>
+<summary>Rotas de equipes</summary>
+
+#### Criar uma equipe
+
+```http
+  POST /create/team
+```
+
+| Parâmetro             | Tipo     | Descrição                                                                                                 |
+| :-------------------- | :------- | :-------------------------------------------------------------------------------------------------------- |
+| `leaderId, membersId` | `string` | **Usuário deve estar logado.Usuario deve informar o Id de funcionario do lider e dos membros da equipe**. |
+
+#### Listar equipes
+
+```http
+  GET /list/teams
+```
+
+| Parâmetro | Tipo     | Descrição                       |
+| :-------- | :------- | :------------------------------ |
+| `null`    | `string` | **Usuário deve estar logado.**. |
+
+#### Atualizar equipe
+
+```http
+  PUT /update/team/:teamId
+```
+
+| Parâmetro                     | Tipo     | Descrição                                                                                                                                                                                                                               |
+| :---------------------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `leaderId, membersId, teamId` | `string` | **Usuário deve estar logado.Usuario deve fornecer id da equipe que deseja alterar**. Usuário devera fornecer id dos novos funcionarios da equipe ou do novo lider, lembrando que estes nao podem fazer parte de uma equipe ja existente |
+
+#### Deletar uma equipe
+
+```http
+  DELETE /delete/team/:teamId
+```
+
+| Parâmetro | Tipo     | Descrição                                                                            |
+| :-------- | :------- | :----------------------------------------------------------------------------------- |
+| `teamId`  | `string` | **Usuário deve estar logado.Usuario deve fornecer id da equipe que deseja deletar**. |
+
+</details>
+
 ### Route tests performed
 
 <details>

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const constructionScheme = new mongoose.Schema({
   client_id: [
@@ -15,14 +15,16 @@ const constructionScheme = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AllocatedItems",
+      required: false,
     },
   ],
   allocated_team: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
+      required: false,
     },
   ],
 });
 
-module.exports = mongoose.model("Constructions", constructionScheme)
+module.exports = mongoose.model("Constructions", constructionScheme);

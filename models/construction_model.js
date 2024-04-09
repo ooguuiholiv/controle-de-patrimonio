@@ -11,6 +11,10 @@ const constructionScheme = new mongoose.Schema({
     type: String,
     required: true,
   },
+  is_active:{
+    type: Boolean,
+    required: true
+  },
   allocated_items: [
     {
       type: mongoose.Schema.Types.ObjectId,
